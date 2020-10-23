@@ -26,7 +26,6 @@ app.get('/', (req, res) => {
 	postgres
 		.select('*')
 		.from('users')
-		.where('id', '=', 'req.session.id')
 		.then(resp => res.json(resp));
 });
 
