@@ -49,22 +49,7 @@ app.post('/imageurl', (req, res) => {
 	image.handleApiCall(req, res);
 });
 
-app.listen(3001, () => {
-	console.log(`app on port 3001.`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+	console.log(`app on port ${PORT}.`);
 });
-// const PORT = process.env.PORT;
-// app.listen(PORT, () => {
-// 	console.log(`app on port ${PORT}.`);
-// });
-
-// bcrypt.hash("bacon", null, null, function(err, hash) {
-//   // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare("bacon", hash, function(err, res) {
-//   // res == true
-// });
-// bcrypt.compare("veggies", hash, function(err, res) {
-//   // res = false
-// });
