@@ -1,16 +1,16 @@
 const handleRegister = (req, res, postgres, bcrypt) => {
 	const { email, name, password } = req.body;
 	if (!email || !password || !name)
-		return res.status(400).json('Incorrect details');
+		return res.status(400).json({ error: "Incorrect details" });
 	const hash = bcrypt.hashSync(password);
 	postgres.transaction(trx => {
 		trx
 			.insert({ email, hash })
-			.into('login')
-			.returning('email')
+			.into("login")
+			.returning("email")
 			.then(loginEmail => {
-				return trx('users')
-					.returning('*')
+				return trx("users")
+					.returning("*")
 					.insert({
 						email: loginEmail[0],
 						name: name,
@@ -21,7 +21,10 @@ const handleRegister = (req, res, postgres, bcrypt) => {
 					.then(trx.commit)
 					.catch(trx.rollback);
 			})
-			.catch(err => res.status(400).json('unable to register'));
+			.catch(err => {
+				console.log(err);
+				res.status(400).json({ error: "unable to register" });
+			});
 	});
 };
 

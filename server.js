@@ -1,52 +1,61 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+require("dotenv").config();
+
+const express = require("express");
 const app = express();
-const cors = require('cors');
-const knex = require('knex');
-const bcrypt = require('bcrypt-nodejs');
-const register = require('./controllers/register');
-const signin = require('./controllers/signin');
-const profile = require('./controllers/profile');
-const image = require('./controllers/image');
+const cors = require("cors");
+const cookieSession = require("cookie-session");
+const knex = require("knex");
+const bcrypt = require("bcrypt-nodejs");
+const register = require("./controllers/register");
+const signin = require("./controllers/signin");
+const profile = require("./controllers/profile");
+const image = require("./controllers/image");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const postgres = knex({
-	client: 'pg',
+	client: "pg",
 	connection: {
 		connectionString: process.env.DATABASE_URL,
 		ssl: true,
 	},
 });
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(
+	cookieSession({
+		name: "session",
+		keys: ["hahahaha", "boooo"],
+	})
+);
 
-app.get('/', (req, res) => {
-	res.json('hi baby');
+app.get("/", (req, res) => {
+	res.json("hi baby");
 	postgres
-		.select('*')
-		.from('users')
+		.select("*")
+		.from("users")
 		.then(resp => res.json(resp));
 });
 
-app.post('/signin', (req, res) => {
+app.post("/signin", (req, res) => {
 	signin.handleSignIn(req, res, postgres, bcrypt);
 });
 
-app.post('/register', (req, res) => {
+app.post("/register", (req, res) => {
 	register.handleRegister(req, res, postgres, bcrypt, app);
 });
 
-app.get('/profile/:id', (req, res) => {
+app.get("/profile/:id", (req, res) => {
 	profile.handleProfile(req, res, postgres);
 });
 
-app.put('/image', (req, res) => {
+app.put("/image", (req, res) => {
 	image.image(req, res, postgres);
 });
 
-app.post('/imageurl', (req, res) => {
+app.post("/imageurl", (req, res) => {
 	image.handleApiCall(req, res);
 });
 
