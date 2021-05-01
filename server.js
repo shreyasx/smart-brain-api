@@ -32,7 +32,6 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-	res.json("hi baby");
 	postgres
 		.select("*")
 		.from("users")
