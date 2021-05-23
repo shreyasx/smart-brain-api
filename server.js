@@ -10,20 +10,24 @@ const register = require("./controllers/register");
 const signin = require("./controllers/signin");
 const profile = require("./controllers/profile");
 const image = require("./controllers/image");
+const morgan = require("morgan");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const postgres = knex({
 	client: "pg",
 	connection: {
-		connectionString: process.env.DATABASE_URL,
-		ssl: true,
+		host: process.env.POSTGRES_HOST,
+		user: process.env.POSTGRES_USER,
+		password: process.env.POSTGRES_PASSWORD,
+		database: process.env.POSTGRES_DB,
 	},
 });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(morgan("combined"));
 app.use(
 	cookieSession({
 		name: "session",
