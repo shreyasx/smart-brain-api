@@ -17,10 +17,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 const postgres = knex({
 	client: "pg",
 	connection: {
-		host: process.env.POSTGRES_HOST,
-		user: process.env.POSTGRES_USER,
-		password: process.env.POSTGRES_PASSWORD,
-		database: process.env.POSTGRES_DB,
+		connectionString: process.env.POSTGRES_URI,
+		ssl: true,
 	},
 });
 
@@ -64,5 +62,5 @@ app.post("/imageurl", (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-	console.log(`app on port ${PORT}.`);
+	console.log(`App on port ${PORT}.`);
 });

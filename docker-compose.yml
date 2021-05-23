@@ -8,10 +8,7 @@ services:
     command: npm start
     working_dir: /usr/src/smart-brain-api
     environment:
-      POSTGRES_USER: shrey
-      POSTGRES_PASSWORD: shreyx
-      POSTGRES_DB: smart-brain-docker
-      POSTGRES_HOST: postgres
+      POSTGRES_URI: postgres://shrey:shreyx@postgres:5432/smart-brain-docker
     links:
       - postgres
     ports:
@@ -21,11 +18,11 @@ services:
 
   #Postgres
   postgres:
-    image: postgres
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: shrey
       POSTGRES_PASSWORD: shreyx
       POSTGRES_DB: smart-brain-docker
       POSTGRES_HOST: postgres
+    build: ./postgres
+    ports:
+      - "5432:5432"
