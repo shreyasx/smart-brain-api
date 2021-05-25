@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const cookieSession = require("cookie-session");
 const knex = require("knex");
 const bcrypt = require("bcrypt-nodejs");
 const register = require("./controllers/register");
@@ -25,13 +24,7 @@ const postgres = knex({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(morgan("combined"));
-app.use(
-	cookieSession({
-		name: "session",
-		keys: ["hahahaha", "boooo"],
-	})
-);
+app.use(morgan("tiny"));
 
 app.get("/", (req, res) => {
 	postgres
@@ -40,16 +33,18 @@ app.get("/", (req, res) => {
 		.then(resp => res.json(resp));
 });
 
-app.post("/signin", (req, res) => {
-	signin.handleSignIn(req, res, postgres, bcrypt);
-});
+app.post("/signin", signin.signinAuth(postgres, bcrypt));
 
 app.post("/register", (req, res) => {
-	register.handleRegister(req, res, postgres, bcrypt, app);
+	register.handleRegister(req, res, postgres, bcrypt);
 });
 
 app.get("/profile/:id", (req, res) => {
 	profile.handleProfile(req, res, postgres);
+});
+
+app.post("/profile/:id", (req, res) => {
+	profile.handleProfileUpdate(req, res, postgres);
 });
 
 app.put("/image", (req, res) => {
@@ -60,7 +55,7 @@ app.post("/imageurl", (req, res) => {
 	image.handleApiCall(req, res);
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
 	console.log(`App on port ${PORT}.`);
 });
