@@ -14,13 +14,12 @@ const handleProfile = (req, res, postgres) => {
 const handleProfileUpdate = (req, res, postgres) => {
 	const { id } = req.params;
 	const { name, age, pet } = req.body.formInput;
-	console.log(age, pet);
 	postgres("users")
 		.where({ id })
-		.update({ name })
+		.update({ name, age, pet })
 		.returning("*")
 		.then(resp => {
-			if (resp) return res.json({ ...resp[0], age, pet });
+			if (resp) return res.json(resp[0]);
 			return res.status(400).json({ error: "errorrrrrr" });
 		})
 		.catch(console.log);

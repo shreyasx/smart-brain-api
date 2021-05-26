@@ -9,12 +9,13 @@ const redisClient = redis.createClient({
 const handleSignIn = (postgres, bcrypt, req) =>
 	new Promise((resolve, reject) => {
 		if (!req.body.email || !req.body.password)
-			return reject({ error: "Wrong credentials." });
+			return reject({ error: "Invalid data." });
 		postgres
 			.select("email", "hash")
 			.from("login")
 			.where("email", "=", req.body.email)
 			.then(data => {
+				if (!data[0]) return reject({ error: "Wrong credentials." });
 				if (bcrypt.compareSync(req.body.password, data[0].hash))
 					return postgres
 						.select("*")
@@ -27,35 +28,54 @@ const handleSignIn = (postgres, bcrypt, req) =>
 			})
 			.catch(e => {
 				console.log(e);
-				reject({ error: "Wrong credentials." });
+				reject({ error: "An unkown error occured." });
 			});
 	});
 
-const createSessions = user => {
+const setToken = (token, id) =>
+	new Promise((resolve, reject) => {
+		redisClient.set(token, id) ? resolve() : reject();
+	});
+
+const createSessions = async user => {
 	const { email, id } = user;
 	const token = jwt.sign({ email }, process.env.JWTsecret, {
 		expiresIn: "2 days",
 	});
-	return { success: true, userId: id, token };
+	try {
+		await setToken(token, id);
+		return { success: true, userId: id, token };
+	} catch (e) {
+		console.log(e);
+	}
 };
 
-const getAuthTokenId = () => console.log("yo auth k");
+const getAuthTokenId = authorization =>
+	new Promise((resolve, reject) => {
+		redisClient.get(authorization, (err, reply) => {
+			if (err) return reject({ error: "An unkown error occured." });
+			if (!reply) return reject({ error: "Unauthorized." });
+			return resolve({ success: true, userId: reply });
+		});
+	});
 
-const signinAuth = (postgres, bcrypt, app) => (req, res) => {
+const signinAuth = (postgres, bcrypt) => (req, res) => {
 	const { authorization } = req.headers;
 	return authorization
-		? getAuthTokenId()
+		? getAuthTokenId(authorization)
+				.then(data => res.json(data))
+				.catch(err => res.status(400).json({ ...err, success: false }))
 		: handleSignIn(postgres, bcrypt, req)
 				.then(
 					data =>
 						new Promise((resolve, reject) =>
 							data.id && data.email
 								? resolve(createSessions(data))
-								: reject(data)
+								: reject({ error: "An unkown error occured." })
 						)
 				)
 				.then(sess => res.json(sess))
-				.catch(console.log);
+				.catch(err => res.status(400).json({ ...err, success: false }));
 };
 
-module.exports = { signinAuth };
+module.exports = { signinAuth, redisClient, setToken, createSessions };

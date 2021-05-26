@@ -1,7 +1,9 @@
+const createSessions = require("./signin").createSessions;
+
 const handleRegister = (req, res, postgres, bcrypt) => {
 	const { email, name, password } = req.body;
 	if (!email || !password || !name)
-		return res.status(400).json({ error: "Incorrect details" });
+		return res.status(400).json({ error: "Invalid data." });
 	const hash = bcrypt.hashSync(password);
 	postgres.transaction(trx => {
 		trx
@@ -16,14 +18,19 @@ const handleRegister = (req, res, postgres, bcrypt) => {
 						name: name,
 						joined: new Date(),
 					})
-					.then(u => res.json(u[0]))
-					.catch(e => res.json(e))
+					.then(async u => {
+						const sess = await createSessions(u[0]);
+						res.json(sess);
+					})
 					.then(trx.commit)
-					.catch(trx.rollback);
+					.catch(e => {
+						trx.rollback();
+						console.log(e);
+					});
 			})
 			.catch(err => {
 				console.log(err);
-				res.status(400).json({ error: "Unable to register." });
+				res.status(400).json({ error: "User already exists." });
 			});
 	});
 };

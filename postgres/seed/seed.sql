@@ -1,21 +1,9 @@
 BEGIN TRANSACTION;
 
-INSERT INTO "public"."users" ("id", "email", "name", "joined") VALUES
-(1, 'shreyxs@gmail.com', 'Shreyyyy', '2021-05-21');
+INSERT INTO "public"."users" ("id", "name", "email", "entries", "joined") VALUES
+(1, 'A-Don', 'a@g.co', 0, '2021-05-24 19:34:36.389');
 
-INSERT INTO "public"."users" ("id", "email", "name", "joined") VALUES
-(2, 's@g.co', 'Try', '2020-05-21');
-
-INSERT INTO "public"."users" ("id", "email", "name", "joined") VALUES
-(3, 'shrxs@gml.com', 'Shrey', '2018-05-21');
-
-INSERT INTO "public"."login" ("email", "hash") VALUES
-('shreyxs@gmail.com', '$2a$10$dJJEvyZ0wMH3Lta9bWyPde1/1vfVNaC7uiXChls/bRmJBm/DnjNOK');
-
-INSERT INTO "public"."login" ("email", "hash") VALUES
-('s@g.co', '$2a$10$dJJEvyZ0wMH3Lta9bWyPde1/1vfVNaC7uiXChls/bRmJBm/DnjNOK');
-
-INSERT INTO "public"."login" ("email", "hash") VALUES
-('shrxs@gml.com', '$2a$10$dJJEvyZ0wMH3Lta9bWyPde1/1vfVNaC7uiXChls/bRmJBm/DnjNOK');
+INSERT INTO "public"."login" ("id", "hash", "email") VALUES
+(1, '$2a$10$2fvaFH8Gg2DL5gg80kPEeOGArh.pOhuSWn1zMu29w4b2zE/q9vpEa', 'a@g.co');
 
 COMMIT;
