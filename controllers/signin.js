@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const redis = require("redis");
 const redisClient = redis.createClient({
 	host: process.env.REDIS_URI,
-	port: process.env.REDIS_PORT,
-	password: process.env.REDIS_PASS,
 });
 
 const handleSignIn = (postgres, bcrypt, req) =>
@@ -28,7 +26,7 @@ const handleSignIn = (postgres, bcrypt, req) =>
 			})
 			.catch(e => {
 				console.log(e);
-				reject({ error: "An unkown error occured." });
+				reject({ error: "An unknown error occured." });
 			});
 	});
 
@@ -53,7 +51,7 @@ const createSessions = async user => {
 const getAuthTokenId = authorization =>
 	new Promise((resolve, reject) => {
 		redisClient.get(authorization, (err, reply) => {
-			if (err) return reject({ error: "An unkown error occured." });
+			if (err) return reject({ error: "An unknown error occured." });
 			if (!reply) return reject({ error: "Unauthorized." });
 			return resolve({ success: true, userId: reply });
 		});
@@ -71,7 +69,7 @@ const signinAuth = (postgres, bcrypt) => (req, res) => {
 						new Promise((resolve, reject) =>
 							data.id && data.email
 								? resolve(createSessions(data))
-								: reject({ error: "An unkown error occured." })
+								: reject({ error: "An unknown error occured." })
 						)
 				)
 				.then(sess => res.json(sess))

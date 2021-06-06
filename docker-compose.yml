@@ -12,8 +12,6 @@ services:
       CLARIFAI_API_KEY:
       JWTsecret:
       REDIS_URI:
-      REDIS_PORT:
-      REDIS_PASS:
     ports:
       - "5000:5000"
     volumes:

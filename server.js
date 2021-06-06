@@ -19,7 +19,7 @@ const postgres = knex({
 	client: "pg",
 	connection: {
 		connectionString: process.env.POSTGRES_URI,
-		sl: true,
+		ssl: true,
 	},
 });
 
