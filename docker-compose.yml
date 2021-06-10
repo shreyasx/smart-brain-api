@@ -11,7 +11,7 @@ services:
       POSTGRES_URI:
       CLARIFAI_API_KEY:
       JWTsecret:
-      REDIS_URI:
+      REDIS_URI: redis
     ports:
       - "5000:5000"
     volumes:
@@ -21,7 +21,7 @@ services:
   postgres:
     environment:
       POSTGRES_USER: shrey
-      POSTGRES_PASSWORD: shreyx
+      POSTGRES_PASSWORD: secret_pass
       POSTGRES_DB: smart-brain-docker
       POSTGRES_HOST: postgres
     build: ./postgres
