@@ -11,8 +11,9 @@ const image = require("./controllers/image");
 const auth = require("./controllers/auth");
 const morgan = require("morgan");
 const { signout } = require("./controllers/signout");
-const fileUpload = require("express-fileupload");
 const app = express();
+const helmet = require("helmet");
+const compression = require("compression");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -28,11 +29,12 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("tiny"));
-app.use(fileUpload());
+app.use(helmet());
+app.use(compression());
 
 app.get("/", (req, res) => {
 	res.send(
-		"<h1>API of the <a href='https://shreyasx-smart-brain.netlify.app/'>Smart Brain</a> app.</h1>"
+		"<h1>API of the <a href='https://shreyasx-smart-brain.netlify.app/'>Smart Brain</a> WebApp.</h1>"
 	);
 });
 
