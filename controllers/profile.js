@@ -12,17 +12,20 @@ const handleProfile = (req, res, postgres) => {
 };
 
 const handleProfileUpdate = (req, res, postgres) => {
+	console.log("HIT!");
 	const { id } = req.params;
-	const { name, age, pet } = req.body.formInput;
-	postgres("users")
-		.where({ id })
-		.update({ name, age, pet })
-		.returning("*")
-		.then(resp => {
-			if (resp) return res.json(resp[0]);
-			return res.status(400).json({ error: "errorrrrrr" });
-		})
-		.catch(console.log);
+	// const { name, age, pet } = req.body;
+	console.log(id, req.files, req.body.image);
+	res.json({ success: false });
+	// postgres("users")
+	// 	.where({ id })
+	// 	.update({ name, age, pet })
+	// 	.returning("*")
+	// 	.then(resp => {
+	// 		if (resp) return res.json(resp[0]);
+	// 		return res.status(400).json({ error: "errorrrrrr" });
+	// 	})
+	// 	.catch(console.log);
 };
 
 module.exports = { handleProfile, handleProfileUpdate };
