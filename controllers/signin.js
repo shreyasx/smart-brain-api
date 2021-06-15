@@ -18,7 +18,7 @@ const handleSignIn = (postgres, bcrypt, req) =>
 				if (!data[0]) return reject({ error: "Wrong credentials." });
 				if (bcrypt.compareSync(req.body.password, data[0].hash))
 					return postgres
-						.select("*")
+						.select("name", "email", "id", "joined", "entries", "age", "pet")
 						.from("users")
 						.where("email", "=", req.body.email)
 						.then(user => {

@@ -1,7 +1,7 @@
 const handleProfile = (req, res, postgres) => {
 	const { id } = req.params;
 	postgres
-		.select("*")
+		.select("name", "id", "joined", "entries", "age", "pet")
 		.from("users")
 		.where({ id })
 		.then(user => {
@@ -9,6 +9,13 @@ const handleProfile = (req, res, postgres) => {
 			else res.status(400).json("not found user");
 		})
 		.catch("error getting profile");
+};
+
+const getPhoto = async (req, res, postgres) => {
+	const { id } = req.params;
+	const data = await postgres("users").select("image").where({ id });
+	res.set("Cache-Control", "public, max-age=31557600"); //one year
+	res.json({ image: data[0].image });
 };
 
 const handleProfileUpdate = (req, res, postgres) => {
@@ -25,4 +32,4 @@ const handleProfileUpdate = (req, res, postgres) => {
 		.catch(console.log);
 };
 
-module.exports = { handleProfile, handleProfileUpdate };
+module.exports = { handleProfile, getPhoto, handleProfileUpdate };
