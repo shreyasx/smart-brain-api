@@ -14,8 +14,6 @@ const compression = require("compression");
 const helmet = require("helmet");
 const { signout } = require("./controllers/signout");
 const app = express();
-const helmet = require("helmet");
-const compression = require("compression");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
