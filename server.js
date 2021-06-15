@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const knex = require("knex");
 const bcrypt = require("bcrypt-nodejs");
@@ -14,6 +13,9 @@ const morgan = require("morgan");
 const compression = require("compression");
 const helmet = require("helmet");
 const { signout } = require("./controllers/signout");
+const app = express();
+const helmet = require("helmet");
+const compression = require("compression");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -25,16 +27,16 @@ const postgres = knex({
 	},
 });
 
-app.use(compression());
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("tiny"));
+app.use(helmet());
+app.use(compression());
 
 app.get("/", (req, res) => {
 	res.send(
-		"<h1>API of the <a href='https://shreyasx-smart-brain.netlify.app/'>Smart Brain</a> app.</h1>"
+		"<h1>API of the <a href='https://shreyasx-smart-brain.netlify.app/'>Smart Brain</a> WebApp.</h1>"
 	);
 });
 
@@ -50,6 +52,10 @@ app.get("/profile/:id", auth.requireAuth, (req, res) => {
 
 app.post("/profile/:id", auth.requireAuth, (req, res) => {
 	profile.handleProfileUpdate(req, res, postgres);
+});
+
+app.get("/profile/photo/:id", auth.requireAuth, (req, res) => {
+	profile.getPhoto(req, res, postgres);
 });
 
 app.put("/image", auth.requireAuth, (req, res) => {
