@@ -14,7 +14,6 @@ const handleProfile = (req, res, postgres) => {
 const getPhoto = async (req, res, postgres) => {
 	const { id } = req.params;
 	const data = await postgres("users").select("image").where({ id });
-	res.set("Cache-Control", "public, max-age=31557600"); //one year
 	res.json({ image: data[0].image });
 };
 
